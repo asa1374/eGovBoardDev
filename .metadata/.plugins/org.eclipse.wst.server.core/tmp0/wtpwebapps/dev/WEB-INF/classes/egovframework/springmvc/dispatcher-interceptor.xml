@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:context="http://www.springframework.org/schema/context" xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+                http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd
+                http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-4.0.xsd">
+
+	<mvc:interceptors>
+
+<!-- 		<bean class="kr.co.ethree.dev.common.Interceptor.AuthenticInterceptor" /> -->
+
+		<mvc:interceptor>
+			<mvc:mapping path="/**/*.do" />
+			<!-- <mvc:exclude-mapping path="/login.do" /> -->
+			<mvc:exclude-mapping path="/actionLogin.do" />
+			<mvc:exclude-mapping path="/actionLogout.do" />
+			<mvc:exclude-mapping path="/admin/**/*.do" />
+			<bean class="kr.co.ethree.dev.common.Interceptor.AuthenticInterceptor" />
+		</mvc:interceptor>
+
+		<mvc:interceptor>
+			<mvc:mapping path="/admin/**/*.do" />
+			<mvc:exclude-mapping path="/admin/adminAuth.do" />
+			<mvc:exclude-mapping path="/admin/login.do" />
+			<mvc:exclude-mapping path="/admin/logout.do" />
+			<bean class="kr.co.ethree.dev.common.Interceptor.AdminAuthenticInterceptor" />
+		</mvc:interceptor>
+
+	</mvc:interceptors>
+
+</beans>

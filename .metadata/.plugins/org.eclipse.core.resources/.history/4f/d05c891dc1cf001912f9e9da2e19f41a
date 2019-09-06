@@ -1,0 +1,256 @@
+package kr.co.ethree.dev.user.board;
+
+import java.io.File;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
+import org.apache.commons.io.FileUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
+
+import kr.co.ethree.dev.common.base.BaseAbstractController;
+import kr.co.ethree.dev.common.model.ListHelperVO;
+import kr.co.ethree.dev.common.util.RequestUtil;
+import kr.co.ethree.dev.user.board.service.BoardService;
+
+@Controller
+@SuppressWarnings({"rawtypes","unchecked"})
+public class BoardController extends BaseAbstractController {
+	
+	@Autowired BoardService boardService;
+	
+	private static final String UPLOAD_PATH = "C:\\dev\\upload";
+	
+	@RequestMapping({ "/user/boardList.do","/main2.do"})
+	public String userBoardList(HttpServletRequest request, HttpServletResponse response, ModelMap model) throws Exception {
+		
+		ListHelperVO boardDataListVO = new ListHelperVO(request);
+		
+		model.addAttribute("boardDataListVO", boardService.getBoardDataListVO(boardDataListVO));
+		model.addAttribute("paramMap", boardDataListVO.getParamMap());
+		
+		//공지사항 리스트
+		ListHelperVO boardDataNoticeListVO = new ListHelperVO(request);
+		boardDataNoticeListVO.setParamValue("notice", 1);
+		boardDataNoticeListVO.setParamValue("startRow", 0);
+		
+		model.addAttribute("boardDataNoticeListVO", boardService.getBoardDataListVO(boardDataNoticeListVO));
+		model.addAttribute("paramMap", boardDataNoticeListVO.getParamMap());
+		
+		HttpSession session = request.getSession();
+		
+		if(session.getAttribute("auth") == null || session.getAttribute("auth").equals("U")) {
+			return "user/board/boardList";
+		}else {
+			return "user/admin/boardList";
+		}
+	}
+	
+	@RequestMapping({ "/user/boardNotice.do"})
+	public String userBoardNoticeList(HttpServletRequest request, HttpServletResponse response, ModelMap model) throws Exception {
+		
+		Map paramMap = RequestUtil.getRequestMap(request);
+		paramMap.put("seq", Integer.parseInt((String) paramMap.get("seq")));
+		
+		Map boardData = boardService.selectBoardOne(paramMap);
+		
+		model.addAttribute("boardData",boardData);
+
+		return "user/board/boardNoticeView";
+	}
+	@RequestMapping({ "/user/board/write.do"})
+	public String userBoardWrite(HttpServletRequest request, HttpServletResponse response, ModelMap model) throws Exception {
+		
+		HttpSession session = request.getSession();
+		
+		if (session.getAttribute("id") == null) {
+			model.addAttribute("alertMsg", "로그인을 해주세요");
+			return "messageView";
+		}
+		
+		return "user/board/boardWrite";
+	}
+	
+	@RequestMapping(value="/user/board/insert.do")
+	public String userBoardRegist(@RequestParam("file") MultipartFile file, HttpServletRequest request, HttpServletResponse response, ModelMap model) throws Exception {
+		HttpSession session = request.getSession();
+		
+		if (session.getAttribute("id") == null) {
+			model.addAttribute("alertMsg", "로그인을 해주세요");
+			return "messageView";
+		}
+		
+		Map paramMap = RequestUtil.getRequestMap(request);
+		paramMap.put("userId", session.getAttribute("id"));
+		paramMap.put("auth", session.getAttribute("auth"));
+		paramMap.put("originalNo","");
+		
+		if (!file.getOriginalFilename().isEmpty()) {
+		      file.transferTo(new File(UPLOAD_PATH,file.getOriginalFilename()));
+		      paramMap.put("fileName", file.getOriginalFilename());
+			  paramMap.put("fileSize", Math.round(file.getSize()*0.0009765*100)/100.0);
+		      System.out.println("업로드 성공");
+		} else {
+			System.out.println("업로드 실패");
+		}
+		
+		boardService.insertBoard(paramMap);
+		
+		model.addAttribute("location", "/user/boardList.do");
+		model.addAttribute("alertMsg", "등록되었습니다.");
+		
+		return "messageView";
+	}
+	
+	@RequestMapping({ "/user/board/updateView.do"})
+	public String userBoardUpdateView(HttpServletRequest request, HttpServletResponse response, ModelMap model) throws Exception {
+		
+		Map paramMap = RequestUtil.getRequestMap(request);
+		paramMap.put("seq", Integer.parseInt((String) paramMap.get("seq")));
+		
+		Map boardData = boardService.selectBoardOne(paramMap);
+		
+		model.addAttribute("boardData",boardData);
+		
+		return "user/board/boardModify";
+	}
+	@RequestMapping({ "/user/board/update.do"})
+	public String userBoardUpdate(@RequestParam("file") MultipartFile file, HttpServletRequest request, HttpServletResponse response, ModelMap model) throws Exception {
+		
+		Map paramMap = RequestUtil.getRequestMap(request);
+		paramMap.put("seq", Integer.parseInt((String) paramMap.get("seq")));
+		
+		if (!file.getOriginalFilename().isEmpty()) {
+		      file.transferTo(new File(UPLOAD_PATH,file.getOriginalFilename()));
+		      paramMap.put("fileName", file.getOriginalFilename());
+			  paramMap.put("fileSize", Math.round(file.getSize()*0.09765)/100.0);
+		      System.out.println("업로드 성공:::::::::::::::::::::"+Math.round(file.getSize()*0.09765)/100.0);
+		} else {
+			System.out.println("업로드 실패");
+		}
+		
+		boardService.updateBoard(paramMap);
+		
+		model.addAttribute("location", "/user/boardList.do");
+		model.addAttribute("alertMsg", "수정이 완료 되었습니다..");
+		
+		return "messageView";
+	}
+	
+	@RequestMapping({ "/user/board/detail.do"})
+	public String userBoardDetail(HttpServletRequest request, HttpServletResponse response, ModelMap model) throws Exception {
+		
+		HttpSession session = request.getSession();
+		
+		if (session.getAttribute("id") == null) {
+			model.addAttribute("alertMsg", "로그인을 해주세요");
+			return "messageView";
+		}
+		
+		Map paramMap = RequestUtil.getRequestMap(request);
+		paramMap.put("seq", Integer.parseInt((String) paramMap.get("seq")));
+		
+		
+		Map boardData = boardService.selectBoardOne(paramMap);
+		
+		model.addAttribute("boardData",boardData);
+		
+		return "user/board/boardView";
+	}
+	@RequestMapping({ "/user/board/delete.do"})
+	public String userBoardDelete(HttpServletRequest request, HttpServletResponse response, ModelMap model) throws Exception {
+		
+		Map paramMap = RequestUtil.getRequestMap(request);
+		paramMap.put("seq", Integer.parseInt((String) paramMap.get("seq")));
+		
+		boardService.deleteBoard(paramMap);
+		model.addAttribute("location", "/user/boardList.do");
+		model.addAttribute("alertMsg", "삭제가 완료 되었습니다..");
+		
+		return "messageView";
+	}
+	@RequestMapping({ "/user/board/fileDown.do"})
+	public void userBoardFileDown(HttpServletRequest request, HttpServletResponse response, ModelMap model) throws Exception {
+		
+		Map paramMap = RequestUtil.getRequestMap(request);
+		paramMap.put("seq", Integer.parseInt((String) paramMap.get("seq")));
+		Map boardData = boardService.selectBoardOne(paramMap);
+		
+		byte fileByte[] = FileUtils.readFileToByteArray(new File("C:\\dev\\upload\\"+boardData.get("fileName")));
+		
+		response.setContentType("application/octet-stream"); 
+		response.setContentLength(fileByte.length); 
+		response.setHeader("Content-Disposition", "attachment; fileName=\"" + boardData.get("fileName")); 
+		response.setHeader("Content-Transfer-Encoding", "binary"); 
+		response.getOutputStream().write(fileByte); 
+		response.getOutputStream().flush(); 
+		response.getOutputStream().close();
+	}
+	/**
+	 * admin 부분
+	 * /user/admin/main.do
+	 * */
+	@RequestMapping({ "/user/admin/main.do"})
+	public String adminBoard(HttpServletRequest request, HttpServletResponse response, ModelMap model) throws Exception {
+		
+		HttpSession session = request.getSession();
+		
+		if (session.getAttribute("id") == null || !session.getAttribute("auth").equals("A")) {
+			model.addAttribute("alertMsg", "접근 불가입니다.");
+			return "messageView";
+		}
+		
+		ListHelperVO boardDataListVO = new ListHelperVO(request);
+		
+		model.addAttribute("boardDataListVO", boardService.getBoardDataListVO(boardDataListVO));
+		model.addAttribute("paramMap", boardDataListVO.getParamMap());
+		
+		//공지사항 리스트
+		ListHelperVO boardDataNoticeListVO = new ListHelperVO(request);
+		boardDataNoticeListVO.setParamValue("notice", 1);
+		boardDataNoticeListVO.setParamValue("startRow", 0);
+		
+		model.addAttribute("boardDataNoticeListVO", boardService.getBoardDataListVO(boardDataNoticeListVO));
+		model.addAttribute("paramMap", boardDataNoticeListVO.getParamMap());
+		
+		return "user/admin/boardList";
+	}
+	@RequestMapping({ "/user/admin/deleteList.do"})
+	public String deletelist(HttpServletRequest request, HttpServletResponse response, ModelMap model) throws Exception {
+		
+		ListHelperVO userListVO = new ListHelperVO(request);
+		
+		model.addAttribute("userDataListVO", boardService.getUserListVO(userListVO));
+		model.addAttribute("paramMap", userListVO.getParamMap());
+		
+		System.out.println(boardService.getUserListVO(userListVO).getList());
+		
+		return "user/admin/deleteList";
+	}
+	@RequestMapping({ "/user/board/reply.do"})
+	public String replyBoard(HttpServletRequest request, HttpServletResponse response, ModelMap model) throws Exception {
+		
+		HttpSession session = request.getSession();
+		
+		Map paramMap = RequestUtil.getRequestMap(request);
+		paramMap.put("userId", session.getAttribute("id"));
+		paramMap.put("auth", "U");
+		paramMap.put("originalNo", Integer.parseInt(request.getParameter("seq")));
+		paramMap.put("groupOrd", Integer.parseInt(request.getParameter("seq"))+1);
+		paramMap.put("groupLayer", Integer.parseInt(request.getParameter("layer"))+1);
+		
+		boardService.insertBoard(paramMap);
+		
+		model.addAttribute("location", "/user/boardList.do");
+		model.addAttribute("alertMsg", "등록되었습니다.");
+		
+		return "messageView";
+	}
+}

@@ -1,0 +1,21 @@
+package kr.co.ethree.dev.user.board.service;
+
+import java.util.List;
+import java.util.Map;
+
+import kr.co.ethree.dev.common.model.ListHelperVO;
+import kr.co.ethree.dev.common.model.Pagination;
+
+@SuppressWarnings({ "rawtypes" })
+public interface BoardService {
+	public List selectBoardList(Pagination pagenation) throws Exception;
+	public ListHelperVO getBoardDataListVO(ListHelperVO listHelperVO) throws Exception;
+	public ListHelperVO getBoardDataNoticeListVO(ListHelperVO listHelperVO) throws Exception;
+	public List selectBoardNoticeList() throws Exception;
+	public Map selectBoardOne(Map paramMap) throws Exception;
+	public int totalcount() throws Exception;
+	public void insertBoard(Map paramMap) throws Exception;
+	public void updateBoard(Map paramMap) throws Exception;
+	public void deleteBoard(Map paramMap) throws Exception;
+	
+}

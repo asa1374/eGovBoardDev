@@ -1,0 +1,22 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" trimDirectiveWhitespaces="true"%>
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<title>메인페이지</title>
+</head>
+<body>
+
+	<ul>
+		<li>
+			<a href="/main2.do">일반 사용자 게시판이용</a>
+		</li>
+		<li>
+			<a href="/admin.do">관리자 로그인창</a>
+		</li>
+		<li>
+			<a href="/user/admin/main.do">관리자 전용 게시판</a>
+		</li>
+	</ul>
+
+</body>
+</html>

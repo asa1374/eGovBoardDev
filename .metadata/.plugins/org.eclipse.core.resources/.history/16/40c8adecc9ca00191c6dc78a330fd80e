@@ -1,0 +1,20 @@
+package kr.co.ethree.dev.user.login.dao;
+
+import java.util.Map;
+
+import org.springframework.stereotype.Repository;
+
+import kr.co.ethree.dev.common.base.BaseAbstractDAO;
+
+@Repository("userLoginDAO")
+@SuppressWarnings({ "unchecked", "rawtypes" })
+public class UserLoginDAO extends BaseAbstractDAO {
+
+	public Map selectUserId(String userId) throws Exception {
+		return (Map) sqlSession.selectOne("userLoginMapper.selectUserId", userId);
+	}
+	public void registUser(Map paramMap) throws Exception {
+		return (Map) sqlSession.selectOne("userLoginMapper.registUser", paramMap);
+	}
+
+}

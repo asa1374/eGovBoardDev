@@ -1,0 +1,16 @@
+package kr.co.ethree.dev.user.board.dao;
+
+import java.util.Map;
+
+import org.springframework.stereotype.Repository;
+
+import kr.co.ethree.dev.common.base.BaseAbstractDAO;
+
+@Repository("boardDAO")
+@SuppressWarnings("rawtypes")
+public class BoardDAO extends BaseAbstractDAO{
+	
+	public Map selectBoardInfoMap(Map paramMap) throws Exception {
+		return (Map) sqlSession.selectOne("adminBoardMapper.selectBoardInfoMap", paramMap);
+	}
+}

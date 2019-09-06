@@ -1,0 +1,14 @@
+package kr.co.ethree.dev.user.board.service;
+
+import java.util.List;
+import java.util.Map;
+
+@SuppressWarnings({ "rawtypes" })
+public interface BoardService {
+	public List selectBoardList() throws Exception;
+	public List selectBoardNoticeList() throws Exception;
+	public Map selectBoardOne(Map paramMap) throws Exception;
+	public void insertBoard(Map paramMap) throws Exception;
+	public void tBoard(Map paramMap) throws Exception;
+	
+}

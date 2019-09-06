@@ -1,0 +1,35 @@
+1567054360396	Copy file
+1567054482720	Rename resource 'sb-admin.min.js'
+1567055318801	Copy file
+1567056847847	Copy file
+1567056879140	Rename resource 'sb-admin.css'
+1567056905006	Move 'login.css' to 'common'
+1567057572502	Copy compilation unit
+1567057581902	Rename type 'AdminLoginController'
+1567058019400	Rename resource 'login.jsp'
+1567058087226	Rename resource 'login.html'
+1567059169899	Delete element
+1567059799920	Delete element
+1567060573663	Rename resource 'login.html'
+1567063327580	Copy file
+1567065364573	Copy packages
+1567065453822	Delete element
+1567065456435	Delete element
+1567065463391	Copy compilation unit
+1567065471645	Rename type 'AdminLoginService'
+1567065474625	Copy compilation unit
+1567065483518	Rename type 'AdminLoginServiceImpl'
+1567065501452	Copy compilation unit
+1567065506213	Delete element
+1567065519303	Delete element
+1567065520413	Delete element
+1567065529820	Copy compilation unit
+1567065535613	Rename type 'AdminLoginService'
+1567065540531	Copy compilation unit
+1567065546258	Rename type 'AdminLoginServiceImpl'
+1567065561312	Copy compilation unit
+1567065567311	Rename type 'AdminLoginDAO'
+1567065868913	Copy file
+1567065883135	Rename resource 'AdminLoginMapper.xml'
+1567145154797	Copy file
+1567145176030	Rename resource 'UserLoginMapper.xml'

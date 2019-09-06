@@ -1,0 +1,71 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" trimDirectiveWhitespaces="true"%>
+<!DOCTYPE html>
+<html lang="kr">
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+  <meta name="author" content="">
+
+  <title>로그인</title>
+
+  <!-- Custom fonts for this template-->
+<!--   <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+ -->
+  <!-- Custom styles for this template-->
+  <!-- <link href="css/sb-admin.css" rel="stylesheet"> -->
+  
+  <script type="text/javascript">
+  $("#SEARCH_KEYWORD").keyup(function(e){if(e.keyCode == 13)  login(); });
+
+	function login() {
+		$("#form").attr("method", "post");
+		$("#form").attr("action", "/user/login.do");
+		$("#form").submit();
+	}
+</script>
+</head>
+
+<body>
+
+  <div class="container">
+    <div class="card card-login mx-auto mt-5">
+      <div class="card-header">Login</div>
+      <div class="card-body">
+        <form id="form">
+          <div class="form-group">
+              <label for="inputEmail" class="sr-only">ID</label>
+			  <input type="text" id="userId" name="userId" class="form-control" placeholder="Id" required autofocus>
+          </div>
+          <div class="form-group">
+              <label for="inputPassword" class="sr-only">Password</label>
+			  <input type="password" id="userPw" name="userPw" class="form-control" placeholder="Password" required>
+          </div>
+          <div class="form-group">
+            <div class="checkbox">
+              <label>
+                <input type="checkbox" value="remember-me">
+                Remember Password
+              </label>
+            </div>
+          </div><!-- href="javascript:login();"  -->
+          <!-- <a class="btn btn-primary btn-block" id="SEARCH_KEYWORD">로그인</a> -->
+          <input type="button" id="loginBtn" class="btn btn-primary btn-block" value="로그인" />
+          <a class="btn btn-primary btn-block" href="/register.do">회원가입</a>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bootstrap core JavaScript-->
+  <!-- script src="vendor/jquery/jquery.min.js"></script>
+  <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+ -->
+  <!-- Core plugin JavaScript-->
+  <!-- <script src="vendor/jquery-easing/jquery.easing.min.js"></script> -->
+</body>
+
+
+</html>

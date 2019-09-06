@@ -1,0 +1,102 @@
+﻿
+1. 프로젝트 디렉토리 규칙
+   - 디렉토리 구조는 Maven 프로젝트의 구조를 따른다.
+   - webapp의 경우 디렉토리 위치가 깊어 source 폴더로 관리하며 excluded: ** 처리하여 사용한다.
+
+2. 패키지 규칙
+   - [권장] 모든 패키지에 사용되는 글자는 소문자를 사용한다. 
+   
+   - 패키지는 업무단위로 생성하며 메뉴단위로 업무를 나누어 진행하는 경우가 많아 계층별 분류는 사용하지 않는다.
+
+   - 전자정부 프레임워크의 패키지는 기본경로를 유지한다.
+
+   - 수행 프로젝의 도메인을 역순으로 작성하며 마지막에 해당 프로젝트 명을 붙인다.
+     ㆍkr.co.ethree.프로젝트명
+
+   - 같은 프로젝트에 권한별 구분이 있을경우 아래와 같이 진행한다.
+     ㆍkr.co.ethree.프로젝트명.user
+     ㆍkr.co.ethree.프로젝트명.admin
+
+   - 하나의 프로젝트에 복수의 호스트 사용 시스템 있을경우 아래와 같이 진행한다.
+     ㆍkr.co.ethree.프로젝트명.www
+     ㆍkr.co.ethree.프로젝트명.webmail
+
+	- 같은 호스트의 권한별 구분이 있을경우 아래와 같이 진행한다.
+	 ㆍkr.co.ethree.프로젝트명.www.user
+	 ㆍkr.co.ethree.프로젝트명.www.admin
+
+3. 클래스 규칙
+   - 첫글자는 대문자를 사용하며 파스칼 표기법을 따른다.
+   - 단어는 축약하여 사용하지 않는다. 전체 문자열 사용한다.
+
+4. 메소드 규칙
+   - 첫글자는 소문자를 사용하며 카멜 표기법을 따른다.
+
+   - 별도의 로직을 포함하지 않는 단순 동작의 경우 쿼리와 동일한 prefix를 사용한다
+
+   - 로직을 포함할 경우 prefix를 정하여 사용한다. (로직별 검토하여 추가 해주시기 바랍니다.)
+     ㆍget, set, save, remove 등등
+
+   - 반환형이 컬렉션인 경우 suffix로 사용하여 표기한다.
+     ㆍselectBoardDataMap
+     ㆍselectBoardDataList
+     ㆍinsertBoardData
+     ㆍupdateBoardData
+     ㆍdeleteBoardData
+
+5. 변수 선언규칙
+   - [권장] 자료형 변수(Data type) 의 경우 헝가리안 표기법을 사용하여 prefix에 해당 자료형을 표기한다.
+
+   - [필수] 컬렉션 변수의 경우 suffix에 해당 자료형을 표기한다.
+	 ㆍList dataList = new ArrayList();
+     ㆍMap dataMap = new HashMap();
+
+6. URL 규칙
+   - 첫글자는 소문자를 사용하며 카멜 표기법을 따른다.
+
+   - URL 규칙은 패키지 규칙과 동일하게 작성한다.
+     (도메인, 프로젝트명, 권한별 그룹 패키지명은(kr.co.ethree.프로젝트명.user)은 생략한다.
+
+   - 컨텐츠 페이지의 경우 해당 내용을 참고하여 작성한다. 
+
+   - CRUD 페이지의 경우 suffix는 아래와 같이 생성한다. (해당하지 않을경우 해당페이지의 목적성을 명확히 표현하여 작성한다)
+     ㆍboardDataList.do
+     ㆍboardDataView.do
+     ㆍboardDataModify.do
+     ㆍboardDataWrite.do
+     ㆍtestMain.do
+     ㆍtestInfo.do
+
+   - 팝업 페이지의 경우 suffix로 Pop 또는 Popup을 사용한다.
+     ㆍboardDataViewPop.do
+     ㆍboardDataViewPopup.do
+
+   - ajax 액션의 경우 suffix로 Ajax를 사용한다.
+     ㆍselectBoardDataMapAjax.do
+     ㆍselectBoardDataListAjax.do
+
+   - 액션의 경우 prefix는 아래와 같이 생성하며 로직의 주요 메소드에 맞추어 작성한다.
+     ㆍinsertBoardData.do
+     ㆍupdateBoardData.do
+     ㆍdeleteBoardData.do
+     ㆍgetBoardData.do
+     ㆍsetBoardData.do
+     ㆍsaveBoardData.do
+
+7. jsp 규칙
+   - 폴더 생성은 패키지 규칙과 동일하게 작성한다.
+   - 첫글자는 소문자를 사용하며 카멜 표기법을 따른다.
+   - 파일명은 URL과 동일하게 생성한다.
+     ㆍboardDataList.jsp
+     ㆍboardDataView.jsp
+     ㆍboardDataModify.jsp
+     ㆍboardDataWrite.jsp
+
+8. JSTL 태그 규칙
+   - c:url 사용금지
+     ㆍc:url의 경우 과거 사용했던 용도가 현재는 쓰이지 않으며 tomcat에서 jsession 이슈를 발생시킬 수 있으므로 사용을 금지한다.
+   - c:out 사용자제
+     ㆍc:out의 경우 이스케이프 문자열이 포함되어 있는 데이터를 치환해주는 용도를 주 목적으로 사용하였으나 
+        XSS 필터가 적용되어 있는 소스에서는 불필요하여 특수한 용도를 제외하고 사용을 하지 않도록 권고한다.
+
+

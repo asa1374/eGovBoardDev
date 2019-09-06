@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project basedir="." default="build" name="DEV">
+
+	<property name="buildPath" value="C:/dev/workspace_build/DEV_build" />
+	<target name="build" depends="delete, webSource, wasSource, etcFiles, zipMake" />
+
+	<!-- 폴더유무 체크 -->
+	<condition property="buildPath.exists">
+		<available file="${buildPath}" type="dir" />
+	</condition>
+
+	<!-- 빌드폴더 삭제 -->
+	<target name="delete" if="buildPath.exists">
+		<delete dir="${buildPath}/DEV_WEB" />
+		<delete dir="${buildPath}/DEV_WAS" />
+		<delete>
+			<fileset dir="${buildPath}/">
+				<include name="DEV_WEB_*.zip" />
+				<include name="DEV_WAS_*.zip" />
+			</fileset>
+		</delete>
+		<delete file="${buildPath}/bind_real.sh" />
+	</target>
+
+	<!-- Web 소스 복사 -->
+	<target name="webSource">
+		<copy todir="${buildPath}/DEV_WEB">
+			<fileset dir="src/main/webapp">
+				<exclude name="*.jsp*" />
+				<exclude name="**/*.jsp*" />
+				<exclude name="WEB-INF/**" />
+			</fileset>
+		</copy>
+	</target>
+
+	<!-- WAS 소스 카피 -->
+	<target name="wasSource">
+		<copy todir="${buildPath}/DEV_WAS">
+			<fileset dir="src/main/webapp">
+				<exclude name="assets/**" />
+				<exclude name="*.html*" />
+				<exclude name="**/*.html*" />
+			</fileset>
+		</copy>
+		<copy todir="${buildPath}/DEV_WAS/WEB-INF/classes">
+			<fileset dir="target/classes">
+				<!-- <exclude name="test.xml" /> -->
+			</fileset>
+		</copy>
+	</target>
+
+	<!-- 기타 파일 복사 -->
+	<target name="etcFiles">
+		<!-- <copy todir="${buildPath}" overwrite="true"> -->
+			<!-- <fileset file="doc/deploy/bind_real.sh" /> -->
+		<!-- </copy> -->
+	</target>
+
+	<!-- ZIP 파일생성 -->
+	<target name="zipMake">
+		<tstamp />
+		<zip destfile="${buildPath}/DEV_WEB_${DSTAMP}.zip">
+			<fileset dir="${buildPath}/DEV_WEB" />
+		</zip>
+		<zip destfile="${buildPath}/DEV_WAS_${DSTAMP}.zip">
+			<fileset dir="${buildPath}/DEV_WAS" />
+		</zip>
+	</target>
+
+</project>

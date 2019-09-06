@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<taglib version="2.0" xmlns="http://java.sun.com/xml/ns/j2ee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee/web-jsptaglibrary_2_0.xsd">
+
+	<tlibversion>1.0</tlibversion>
+	<shortname>ethree</shortname>
+
+	<tag>
+		<name>paging</name>
+		<tag-class>kr.co.ethree.dev.common.tag.PagingTag</tag-class>
+		<body-content>empty</body-content>
+		<example>
+			${ethree:paging(listHelperVO)},
+			${ethree:paging(listHelperVO, jsFunction)},
+			${ethree:paging(totalCount, pageIndex, jsFunction)}
+		</example>
+		<attribute>
+			<name>listHelperVO</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>totalCount</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>pageIndex</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>cntPerPage</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>cntPerblock</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>jsFunction</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+	</tag>
+
+	<tag>
+		<name>clobToString</name>
+		<tag-class>kr.co.ethree.dev.common.tag.ClobToStringTag</tag-class>
+		<body-content>empty</body-content>
+		<example>
+			${ethree:clobToString(value)}
+		</example>
+		<attribute>
+			<name>value</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+	</tag>
+
+</taglib>

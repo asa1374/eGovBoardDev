@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="adminLoginMapper">
+
+	<!-- 계정 정보 조회 -->
+	<select id="selectUserInfoMap" parameterType="hMap" resultType="egovMap">
+	SELECT 	A.SEQ
+			, A.USER_ID
+			, A.USER_PW
+			, A.USE_YN
+			, A.REG_ID
+			, A.REG_DATE
+			, A.MOD_ID
+			, A.MOD_DATE
+	  FROM 	USER_INFO A
+	 WHERE 	A.USER_ID = #{userId}
+	   AND 	A.USER_PW = #{userPw}
+	</select>
+
+</mapper>

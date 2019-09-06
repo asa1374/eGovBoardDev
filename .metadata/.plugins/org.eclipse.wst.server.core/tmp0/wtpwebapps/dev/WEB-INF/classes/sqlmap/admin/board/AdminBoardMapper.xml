@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="adminBoardMapper">
+
+	<!-- CLOB 변환-->
+	<resultMap type="egovMap" id="clobParam">
+		<result property="content" column="content" jdbcType="CLOB" javaType="java.lang.String" />
+	</resultMap>
+
+	<!-- 페이징 Start -->
+	<sql id="pagingStr">
+		<if test="cntPerPage != null and cntPerPage != ''">
+		<![CDATA[
+			SELECT Z.* FROM (
+			SELECT ROWNUM RNUM, X.* FROM (
+		]]>
+		</if>
+	</sql>
+
+	<!-- 페이징 End -->
+	<sql id="pagingEnd">
+		<if test="cntPerPage != null and cntPerPage != ''">
+		<![CDATA[
+			) X
+		) Z
+		WHERE Z.RNUM BETWEEN (#{pageIndex, jdbcType=INTEGER} -1) * #{cntPerPage, jdbcType=INTEGER} + 1
+		  AND #{pageIndex, jdbcType=INTEGER} * #{cntPerPage, jdbcType=INTEGER}
+		]]>
+		</if>
+	</sql>
+
+	<!-- #################################################################################################### -->
+	<!-- 게시판 -->
+	<!-- #################################################################################################### -->
+
+	<!-- 게시판 정보 조회 -->
+	<select id="selectBoardInfoMap" parameterType="hMap" resultType="egovMap">
+		SELECT 	A.SEQ
+				, A.BOARD_NAME
+				, A.BOARD_PROG_ID
+				, A.BOARD_DESCRIPTION
+				, A.FILE_YN
+				, A.FILE_CNT
+				, A.FILE_MAX_SIZE
+				, A.REPLY_YN
+				, A.NEW_ICON_DATE_CNT
+				, A.USE_YN
+				, A.REG_ID
+				, A.REG_DATE
+				, A.MOD_ID
+				, A.MOD_DATE
+		  FROM 	BOARD_INFO A
+		 WHERE 	1 = 1
+		 	<if test="boardProgId != null and boardProgId != ''">
+		   AND 	A.BOARD_PROG_ID = #{boardProgId}
+		 	</if>
+	</select>
+
+	<!-- #################################################################################################### -->
+	<!-- 게시글 -->
+	<!-- #################################################################################################### -->
+
+	<!-- 게시글 목록 개수 조회 -->
+	<select id="selectBoardDataListCnt" parameterType="hMap" resultType="int">
+		SELECT  COUNT(*) AS CNT
+		  FROM 	BOARD_DATA A
+	</select>
+
+	<!-- 게시글 목록 조회 -->
+	<select id="selectBoardDataList" parameterType="hMap" resultType="egovMap">
+		<include refid="pagingStr" />
+		SELECT 	A.SEQ
+				, A.BOARD_SEQ
+				, A.TITLE
+				, A.CONTENT
+				, A.HIT_CNT
+				, A.TOP_YN
+				, A.USE_YN
+				, A.REG_ID
+				, A.REG_DATE
+				, A.MOD_ID
+				, A.MOD_DATE
+		  FROM 	BOARD_DATA A
+		ORDER BY A.REG_DATE DESC
+		<include refid="pagingEnd" />
+	</select>
+
+	<!-- 게시글 조회 -->
+	<select id="selectBoardDataMap" parameterType="hMap" resultType="egovMap">
+		SELECT 	A.SEQ
+				, A.BOARD_SEQ
+				, A.TITLE
+				, A.CONTENT
+				, A.HIT_CNT
+				, A.TOP_YN
+				, A.USE_YN
+				, A.REG_ID
+				, A.REG_DATE
+				, A.MOD_ID
+				, A.MOD_DATE
+		  FROM 	BOARD_DATA A
+		 WHERE 	A.SEQ = #{seq}
+		   AND 	A.BOARD_SEQ = #{boardSeq}
+	</select>
+
+	<select id="selectBoardDataNextPrevMap" parameterType="hMap" resultType="egovMap">
+		SELECT 	B.SEQ
+				, B.NEXT_SEQ
+				, B.PREV_SEQ
+				, B.NEXT_TITLE
+				, B.PREV_TITLE
+				, TO_CHAR(B.NEXT_REG_DATE, 'YYYY-MM-DD') AS NEXT_REG_DATE
+				, TO_CHAR(B.PREV_REG_DATE, 'YYYY-MM-DD') AS PREV_REG_DATE
+		  FROM  (
+				SELECT	A.SEQ
+						, LAG(A.SEQ, 1, A.SEQ)  OVER (ORDER BY A.REG_DATE DESC, A.SEQ DESC) AS NEXT_SEQ
+						, LEAD(A.SEQ, 1, A.SEQ) OVER (ORDER BY A.REG_DATE DESC, A.SEQ DESC) AS PREV_SEQ
+						, LAG(A.TITLE, 1, A.TITLE)  OVER (ORDER BY A.REG_DATE DESC, A.SEQ DESC) AS NEXT_TITLE
+						, LEAD(A.TITLE, 1, A.TITLE) OVER (ORDER BY A.REG_DATE DESC, A.SEQ DESC) AS PREV_TITLE
+						, LAG(A.REG_DATE, 1, A.REG_DATE)  OVER (ORDER BY A.REG_DATE DESC, A.SEQ DESC) AS NEXT_REG_DATE
+						, LEAD(A.REG_DATE, 1, A.REG_DATE) OVER (ORDER BY A.REG_DATE DESC, A.SEQ DESC) AS PREV_REG_DATE
+				  FROM (
+				  		SELECT 	T1.*
+				  		  FROM  (
+								SELECT 	A.SEQ
+										, A.BOARD_SEQ
+										, A.TITLE
+										, A.CONTENT
+										, A.HIT_CNT
+										, A.TOP_YN
+										, A.USE_YN
+										, A.REG_ID
+										, A.REG_DATE
+										, A.MOD_ID
+										, A.MOD_DATE
+								  FROM 	BOARD_DATA A
+								 WHERE 	A.USE_YN = 'Y'
+								   AND 	A.TOP_YN = 'Y'
+								<if test="boardSeqList == null or boardSeqList == ''">
+								   AND 	A.BOARD_SEQ = #{boardSeq}
+								</if>
+								<if test="boardSeqList != null and boardSeqList != ''">
+								   AND 	A.BOARD_SEQ IN <foreach item="item" index="index" collection="boardSeqList" open="(" separator="," close=")">#{item}</foreach>
+								</if>
+								ORDER BY A.REG_DATE DESC, A.SEQ DESC
+				  		  		) T1
+			
+						UNION ALL
+			
+				  		SELECT 	T2.*
+				  		  FROM  (
+								SELECT 	A.SEQ
+										, A.BOARD_SEQ
+										, A.TITLE
+										, A.CONTENT
+										, A.HIT_CNT
+										, A.TOP_YN
+										, A.USE_YN
+										, A.REG_ID
+										, A.REG_DATE
+										, A.MOD_ID
+										, A.MOD_DATE
+								  FROM 	BOARD_DATA A
+								 WHERE 	A.USE_YN = 'Y'
+								   AND 	(A.TOP_YN = 'N' OR A.TOP_YN IS NULL)
+								<if test="boardSeqList == null or boardSeqList == ''">
+								   AND 	A.BOARD_SEQ = #{boardSeq}
+								</if>
+								<if test="boardSeqList != null and boardSeqList != ''">
+								   AND 	A.BOARD_SEQ IN <foreach item="item" index="index" collection="boardSeqList" open="(" separator="," close=")">#{item}</foreach>
+								</if>
+								ORDER BY A.REG_DATE DESC, A.SEQ DESC
+				  		  		) T2
+				  		) A
+		  		) B
+		WHERE B.SEQ = #{seq}	
+	</select>
+
+	<!-- 게시글 이전 다음글 조회 -->
+	<insert id="insertBoardData" parameterType="hMap">
+	INSERT INTO BOARD_DATA 
+		(
+			SEQ
+			, BOARD_SEQ
+			, TITLE
+			, CONTENT
+			, HIT_CNT
+			, TOP_YN
+			, USE_YN
+			, REG_ID
+			, REG_DATE
+		) VALUES (
+			BOARD_DATA_SEQ.NEXTVAL
+			, #{boardSeq}
+			, #{title, jdbcType=VARCHAR}
+			, #{content, jdbcType=VARCHAR}
+			, NVL(#{hitCnt, jdbcType=INTEGER}, 0)
+			, NVL(#{topYn, jdbcType=VARCHAR}, 'N')
+			, NVL(#{useYn, jdbcType=VARCHAR}, 'Y')
+			, #{regId, jdbcType=VARCHAR}
+			, SYSDATE
+		)
+	</insert>
+	
+	<update id="updateBoardData" parameterType="hMap">
+		UPDATE 	BOARD_DATA
+		   SET 	TITLE = #{title}
+				, CONTENT = #{content}
+		 WHERE 	SEQ = #{seq} 	
+	</update>
+
+	<delete id="deleteBoardData" parameterType="hMap">
+		DELETE FROM BOARD_DATA
+		WHERE SEQ = #{seq} 
+	</delete>
+
+</mapper>

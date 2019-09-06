@@ -1,0 +1,17 @@
+package kr.co.ethree.dev.user.board.service;
+
+import java.util.Map;
+
+import org.springframework.stereotype.Service;
+
+import kr.co.ethree.dev.common.base.BaseAbstractServiceImpl;
+
+@Service("boardService")
+public class BoardServiceImpl extends BaseAbstractServiceImpl implements BoardService {
+
+	@Override
+	public Map selectBoardList(Map paramMap) throws Exception {
+		return null;
+	}
+
+}

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project basedir="." default="build" name="DEV">
+
+	<property name="buildPath" value="C:/dev/workspace_build/DEV_build" />
+	<target name="build" depends="delete, webSource, classFile, etcFiles, zipMake" />
+
+	<!-- 폴더유무 체크 -->
+	<condition property="buildPath.exists">
+		<available file="${buildPath}" type="dir" />
+	</condition>
+
+	<!-- 빌드폴더 삭제 -->
+	<target name="delete" if="buildPath.exists">
+		<delete dir="${buildPath}/DEV_DEV" />
+		<delete>
+			<fileset dir="${buildPath}/">
+				<include name="DEV_DEV_*.zip" />
+			</fileset>
+		</delete>
+		<delete file="${buildPath}/bind_dev.sh" />
+	</target>
+
+	<!-- Web 소스 복사 -->
+	<target name="webSource">
+		<copy todir="${buildPath}/DEV_DEV">
+			<fileset dir="src/main/webapp" />
+		</copy>
+	</target>
+
+	<!-- 빌드된 class파일 복사 -->
+	<target name="classFile">
+		<copy todir="${buildPath}/DEV_DEV/WEB-INF/classes">
+			<fileset dir="target/classes">
+				<!-- <exclude name="test.xml" /> -->
+			</fileset>
+		</copy>
+	</target>
+
+	<!-- 기타 파일 복사 -->
+	<target name="etcFiles">
+		<!-- <copy todir="${buildPath}" overwrite="true"> -->
+			<!-- <fileset file="doc/deploy/bind_real.sh" /> -->
+		<!-- </copy> -->
+	</target>
+
+	<!-- ZIP 파일생성 -->
+	<target name="zipMake">
+		<tstamp />
+		<zip destfile="${buildPath}/DEV_DEV_${DSTAMP}.zip">
+			<fileset dir="${buildPath}/DEV_DEV" />
+		</zip>
+	</target>
+
+</project>

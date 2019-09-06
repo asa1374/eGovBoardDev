@@ -1,0 +1,27 @@
+package kr.co.ethree.dev.user.board.service;
+
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import kr.co.ethree.dev.common.base.BaseAbstractServiceImpl;
+import kr.co.ethree.dev.user.board.dao.BoardDAO;
+
+@Service("boardService")
+@SuppressWarnings("rawtypes")
+public class BoardServiceImpl extends BaseAbstractServiceImpl implements BoardService {
+	@Autowired BoardDAO boardDao;
+	
+	@Override
+	public List selectBoardList() throws Exception {
+		return boardDao.selectBoardList();
+	}
+
+	@Override
+	public Map selectBoardOne(String seq) throws Exception {
+		return boardDao.selectBoardOne();
+	}
+
+}

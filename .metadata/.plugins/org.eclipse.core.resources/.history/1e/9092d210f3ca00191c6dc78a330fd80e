@@ -1,0 +1,14 @@
+package kr.co.ethree.dev.user.board.dao;
+
+import java.util.Map;
+
+import org.springframework.stereotype.Repository;
+
+@Repository("boardDAO")
+@SuppressWarnings("rawtypes")
+public class BoardDAO {
+	
+	public Map selectBoardInfoMap(Map paramMap) throws Exception {
+		return (Map) sqlSession.selectOne("adminBoardMapper.selectBoardInfoMap", paramMap);
+	}
+}

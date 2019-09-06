@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sitemesh>
+
+	<!-- 레이아웃 페이지에서 호출 페이지의 결과의 태그를 선택하여 병합(merge)하며 병합한다 -->
+
+	<!-- Mapping -->
+	<mapping path="/*.do" decorator="/WEB-INF/jsp/common/layout/userLayout.jsp" />
+	<mapping path="/*Pop.do" decorator="/WEB-INF/jsp/common/layout/userLayoutPop.jsp" />
+	<mapping path="/*Popup.do" decorator="/WEB-INF/jsp/common/layout/userLayoutPop.jsp" />
+
+	<mapping path="/admin/*.do" decorator="/WEB-INF/jsp/common/layout/adminLayout.jsp" />
+	<mapping path="/admin/*Pop.do" decorator="/WEB-INF/jsp/common/layout/adminLayoutPop.jsp" />
+	<mapping path="/admin/*Popup.do" decorator="/WEB-INF/jsp/common/layout/adminLayoutPop.jsp" />
+
+	<mapping path="/admin/adminAuth.do" decorator="/WEB-INF/jsp/common/layout/adminLayoutAuth.jsp" />
+	
+	
+
+	<!-- Exclude -->
+	<mapping path="/pdf/*" exclue="true" />
+	<mapping path="/*Ajax.do" exclue="true" />
+
+</sitemesh>
